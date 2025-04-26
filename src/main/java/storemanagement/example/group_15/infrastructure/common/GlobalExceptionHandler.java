@@ -17,7 +17,6 @@ import java.util.Map;
 @RestControllerAdvice
 @Component // Thêm annotation này
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.error("validatorError", ex);
@@ -35,6 +34,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<Object> handleAppException(AppException ex){
         log.error("exception", ex);

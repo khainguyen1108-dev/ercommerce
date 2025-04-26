@@ -1,32 +1,45 @@
-package storemanagement.example.group_15.domain.auth.entity;
+package storemanagement.example.group_15.domain.users.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import storemanagement.example.group_15.domain.auth.constant.Role;
+import storemanagement.example.group_15.domain.users.constant.Role;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AuthEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String username;
+    @Column(name = "role_id", nullable = false)
+    private Long roleId; // Sửa thành role_id thay vì Enum nếu theo Excel
 
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = false, length = 50)
+    private String name; // Chỉnh lại đúng theo file Excel (username -> name)
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING) // Lưu dưới dạng chuỗi: "ADMIN", "USER"
-    private Role role; // ví dụ: ADMIN, USER
+    private String password;
+
+    @Column
+    private LocalDateTime dob; // Ngày sinh, kiểu ngày giờ
+
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 20)
+    private String phone;
+
+    @Column
+    private Boolean isBuy; // Trạng thái đã mua hay chưa
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -43,14 +56,5 @@ public class AuthEntity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    public AuthEntity(String username, String password, String email, Role role) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-    }
-    public AuthEntity(){
-
-    }
 }
+
