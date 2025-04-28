@@ -1,8 +1,7 @@
-package storemanagement.example.group_15.domain.users.entity;
+package storemanagement.example.group_15.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import storemanagement.example.group_15.domain.users.constant.Role;
 
 import java.time.LocalDateTime;
 
