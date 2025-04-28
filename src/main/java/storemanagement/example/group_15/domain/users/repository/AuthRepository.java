@@ -1,7 +1,7 @@
-package storemanagement.example.group_15.domain.auth.repository;
+package storemanagement.example.group_15.domain.users.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import storemanagement.example.group_15.domain.auth.entity.AuthEntity;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
 package storemanagement.example.group_15.app.dto.response.auth;
 
-import storemanagement.example.group_15.domain.auth.constant.Role;
+import storemanagement.example.group_15.domain.users.constant.Role;
 
 public class AuthLoginResponseDTO {
     private final String accessToken;

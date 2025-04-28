@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import storemanagement.example.group_15.domain.auth.constant.Role;
+import storemanagement.example.group_15.domain.users.constant.Role;
 
 @Data
 public class AuthLoginRequestDTO {
