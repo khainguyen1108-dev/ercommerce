@@ -1,24 +1,23 @@
 package storemanagement.example.group_15.domain.favorites.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
+import storemanagement.example.group_15.domain.products.entity.ProductEntity;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 
 @Entity
-@Table(name = "favorites_entity") // 👉 bạn đổi "your_table_name" thành tên bảng thực tế nhé
+@Table(name = "favorites", uniqueConstraints = @UniqueConstraint(columnNames = { "product_id", "customer_id" }))
 @Data
 public class FavoritesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
 
-    @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private AuthEntity customer;
 }
-
-
-
-

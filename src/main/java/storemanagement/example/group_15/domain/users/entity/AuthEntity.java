@@ -2,9 +2,13 @@ package storemanagement.example.group_15.domain.users.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import storemanagement.example.group_15.domain.users.constant.Role;
+import storemanagement.example.group_15.domain.favorites.entity.FavoritesEntity;
+import storemanagement.example.group_15.domain.orders.entity.OrderEntity;
+import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -56,5 +60,16 @@ public class AuthEntity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-}
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<FavoritesEntity> favorites = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderEntity> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RatingEntity> ratings = new ArrayList<>();
+}

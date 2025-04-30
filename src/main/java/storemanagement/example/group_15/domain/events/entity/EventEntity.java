@@ -24,7 +24,7 @@ public class EventEntity {
     @Column(name = "time_at", nullable = false)
     private LocalDateTime timeAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     @JoinColumn(name = "voucher_id")
     private VoucherEntity voucher;
 }

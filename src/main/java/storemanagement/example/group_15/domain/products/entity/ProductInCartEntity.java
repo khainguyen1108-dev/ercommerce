@@ -2,6 +2,8 @@ package storemanagement.example.group_15.domain.products.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.carts.entity.CartEntity;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,11 +21,13 @@ public class ProductInCartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
 
-    @Column(name = "cart_id", nullable = false)
-    private Long cartId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private CartEntity cart;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

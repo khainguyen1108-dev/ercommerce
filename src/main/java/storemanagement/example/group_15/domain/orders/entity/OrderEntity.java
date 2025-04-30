@@ -2,6 +2,7 @@ package storemanagement.example.group_15.domain.orders.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vladmihalcea.hibernate.type.json.JsonType;
@@ -23,8 +24,9 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private AuthEntity customer;
 
     @Column(name = "total_payment", nullable = false)
     private BigDecimal totalPayment;
