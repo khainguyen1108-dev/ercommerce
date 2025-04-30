@@ -2,6 +2,8 @@ package storemanagement.example.group_15.domain.rating.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.products.entity.ProductEntity;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 
 @Entity
 @Table(name = "rating")
@@ -15,11 +17,13 @@ public class RatingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
 
-    @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private AuthEntity customer;
 
     @Column(name = "stars", nullable = false)
     private Integer stars;
