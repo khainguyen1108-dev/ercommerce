@@ -57,8 +57,6 @@ public class AuthEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @OneToOne(mappedBy = "cart")
-    private CartEntity cart;
 
 }
 
