@@ -2,8 +2,13 @@ package storemanagement.example.group_15.domain.products.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.collections.entity.CollectionEntity;
+import storemanagement.example.group_15.domain.favorites.entity.FavoritesEntity;
+import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -17,16 +22,15 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "inventory")
+    @Column(name = "inventory", nullable = false)
     private Long inventory;
 
-    @Column(name = "sold")
+    @Column(name = "sold", nullable = false)
     private Long sold;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
-    @Column(name = "linhtinh")
-    private String linhtinh;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
@@ -41,4 +45,16 @@ public class ProductEntity {
 
     @Column(name = "vendor", length = 255)
     private String vendor;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<FavoritesEntity> favorites = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProductInCartEntity> productInCarts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RatingEntity> ratings = new ArrayList<>();
 }

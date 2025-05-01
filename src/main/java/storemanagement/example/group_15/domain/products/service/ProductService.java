@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import storemanagement.example.group_15.app.dto.request.product.ProductCreateDTO;
-import storemanagement.example.group_15.domain.auth.entity.AuthEntity;
 import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.products.repository.ProductRepository;
 

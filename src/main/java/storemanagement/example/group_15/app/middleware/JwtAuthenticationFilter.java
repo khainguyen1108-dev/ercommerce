@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
-import storemanagement.example.group_15.domain.auth.service.JwtService;
+import storemanagement.example.group_15.domain.users.service.JwtService;
 
 import java.io.IOException;
 

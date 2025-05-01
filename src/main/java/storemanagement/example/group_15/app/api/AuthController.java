@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO;
-import storemanagement.example.group_15.app.dto.request.auth.AuthRegisterRequestDTO;
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
-import storemanagement.example.group_15.domain.auth.service.AuthService;
-import storemanagement.example.group_15.domain.auth.service.JwtService;
+import storemanagement.example.group_15.domain.users.service.AuthService;
+import storemanagement.example.group_15.domain.users.service.JwtService;
 
 @RestController
 public class AuthController {

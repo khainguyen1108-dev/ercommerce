@@ -1,4 +1,4 @@
-package storemanagement.example.group_15.domain.auth.service;
+package storemanagement.example.group_15.domain.users.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

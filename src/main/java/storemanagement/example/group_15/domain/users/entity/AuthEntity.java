@@ -1,10 +1,15 @@
-package storemanagement.example.group_15.domain.auth.entity;
+package storemanagement.example.group_15.domain.users.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import storemanagement.example.group_15.domain.carts.entity.CartEntity;
+import lombok.Builder.Default;
+import storemanagement.example.group_15.domain.favorites.entity.FavoritesEntity;
+import storemanagement.example.group_15.domain.orders.entity.OrderEntity;
+import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +22,7 @@ public class AuthEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_id")
+    @Column(name = "role_id", nullable = false)
     private Long roleId;
 
     @Column(nullable = false, length = 50)
@@ -57,6 +62,15 @@ public class AuthEntity {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Default
+    private List<FavoritesEntity> favorites = new ArrayList<>();
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Default
+    private List<OrderEntity> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Default
+    private List<RatingEntity> ratings = new ArrayList<>();
 }
-

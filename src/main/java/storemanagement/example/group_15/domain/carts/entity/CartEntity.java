@@ -2,9 +2,12 @@ package storemanagement.example.group_15.domain.carts.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.products.entity.ProductInCartEntity;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cart")
@@ -40,4 +43,8 @@ public class CartEntity {
         COD,
         CREDIT_CARD
     }
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProductInCartEntity> productInCartEntities = new ArrayList<>();
 }

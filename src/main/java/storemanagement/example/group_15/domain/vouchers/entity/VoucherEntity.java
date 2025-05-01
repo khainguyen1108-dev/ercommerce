@@ -1,7 +1,14 @@
 package storemanagement.example.group_15.domain.vouchers.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.carts.entity.CartEntity;
+import storemanagement.example.group_15.domain.events.entity.EventEntity;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "voucher")
 @Data
@@ -31,4 +38,12 @@ public class VoucherEntity {
 
     @Column(columnDefinition = "TEXT")
     private String condition;
+
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<CartEntity> carts = new ArrayList<>();
+
+    @OneToOne(mappedBy = "voucher", fetch = FetchType.LAZY)
+    private EventEntity event;
+
 }

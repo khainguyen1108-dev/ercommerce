@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 !**/src/main/resources/application.yaml
 
+!**/src/main/java/resource/application.yaml
+
 ### STS ###
 .apt_generated
 .classpath

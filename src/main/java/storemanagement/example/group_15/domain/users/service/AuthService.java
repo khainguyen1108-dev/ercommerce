@@ -1,4 +1,4 @@
-package storemanagement.example.group_15.domain.auth.service;
+package storemanagement.example.group_15.domain.users.service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO;
-import storemanagement.example.group_15.app.dto.request.auth.AuthRegisterRequestDTO;
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
-import storemanagement.example.group_15.domain.auth.entity.AuthEntity;
-import storemanagement.example.group_15.domain.auth.repository.AuthRepository;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
+import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.infrastructure.error.AppException;
 
 import java.util.Map;
