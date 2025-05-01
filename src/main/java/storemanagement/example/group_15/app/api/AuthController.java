@@ -38,15 +38,15 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<ApiResponse<AuthResponseDTO>> register(@RequestBody @Valid AuthRegisterRequestDTO user, HttpServletResponse response) {
-        try {
-            AuthRegisterRequestDTO output = this.authService.register(user, response);
-            return ResponseEntity.status(SuccessConstant.CREATED)
-                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
-        } catch (Exception e) {
-            log.error("register", e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostMapping("/auth/register")
+//    public ResponseEntity<ApiResponse<AuthResponseDTO>> register(@RequestBody @Valid AuthRegisterRequestDTO user, HttpServletResponse response) {
+//        try {
+//            AuthRegisterRequestDTO output = this.authService.register(user, response);
+//            return ResponseEntity.status(SuccessConstant.CREATED)
+//                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+//        } catch (Exception e) {
+//            log.error("register", e.getMessage());
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

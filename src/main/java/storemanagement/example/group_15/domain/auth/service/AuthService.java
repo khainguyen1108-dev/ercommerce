@@ -46,7 +46,7 @@ public class AuthService {
         response.addCookie(refreshTokenCookie);
         return out;
     }
-    public AuthResponseDTO register(AuthRegisterRequestDTO input, HttpServletResponse response){
-        AuthEntity 
-    }
+//    public AuthResponseDTO register(AuthRegisterRequestDTO input, HttpServletResponse response){
+//        AuthEntity
+//    }
 }
