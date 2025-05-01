@@ -1,11 +1,14 @@
 package storemanagement.example.group_15.app.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +16,7 @@ import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO;
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.users.service.AuthService;
 import storemanagement.example.group_15.domain.users.service.JwtService;
 
@@ -35,7 +39,16 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
-
+    @GetMapping("/users/getUser")
+    public AuthEntity getUsers(HttpServletRequest request){
+        try{
+            Claims claims = (Claims) request.getAttribute("claims");
+            String sub = (String) claims.get("sub");
+            return this.authService.getUser(Long.parseLong(sub));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 //    @PostMapping("/auth/register")
 //    public ResponseEntity<ApiResponse<AuthResponseDTO>> register(@RequestBody @Valid AuthRegisterRequestDTO user, HttpServletResponse response) {
 //        try {

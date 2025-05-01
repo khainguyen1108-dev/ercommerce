@@ -15,6 +15,8 @@ import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.products.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 
 @RestController()
 @RequestMapping("/products")
@@ -25,11 +27,18 @@ public class ProductController {
 
 
     @GetMapping("")
-    public void getAll(
+    public ResponseEntity<ApiResponse<Page<ProductEntity>>>  getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductEntity> products = productService.getAllProducts(pageable);
+
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ProductEntity> products = productService.getAllProducts(pageable);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, products, 201));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

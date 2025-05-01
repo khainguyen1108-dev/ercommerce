@@ -25,7 +25,7 @@ public class ProductEntity {
     @Column(name = "inventory", nullable = false)
     private Long inventory;
 
-    @Column(name = "sold", nullable = false)
+    @Column(name = "sold")
     private Long sold;
 
     @Column(name = "name", nullable = false, length = 255)

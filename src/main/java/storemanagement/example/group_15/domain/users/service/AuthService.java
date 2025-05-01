@@ -45,6 +45,13 @@ public class AuthService {
         response.addCookie(refreshTokenCookie);
         return out;
     }
+    public AuthEntity getUser(Long id){
+        Optional<AuthEntity> output = this.authRepository.findById(id);
+        if (output.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "user_id.invalid");
+        }
+        return  output.get();
+    }
 //    public AuthResponseDTO register(AuthRegisterRequestDTO input, HttpServletResponse response){
 //        AuthEntity
 //    }

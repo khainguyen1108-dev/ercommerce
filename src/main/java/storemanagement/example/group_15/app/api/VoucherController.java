@@ -1,8 +1,15 @@
 package storemanagement.example.group_15.app.api;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/vouchers")
 public class VoucherController {
-    //add -> 1 service ( xu ly logic -> thao tac db) -> response controller -> response cho nguoi dung
-    //1 controller-add vouchet include name va discount type product collection event
+    //add
+    @PostMapping("")
+    public create
     //update
     //delete
     //getAll
