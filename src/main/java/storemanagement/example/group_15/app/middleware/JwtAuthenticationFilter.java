@@ -18,11 +18,12 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter implements Filter {
-    private static final String COOKIE = "Cookie";
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
-    private final JwtService jwtService;
-    private final ObjectMapper objectMapper;
+    @Autowired
+    private  JwtService jwtService;
+    @Autowired
+    private ObjectMapper objectMapper;
     private static String accessToken;
     private static String refreshToken;
 
@@ -42,11 +43,6 @@ public class JwtAuthenticationFilter implements Filter {
         JwtAuthenticationFilter.refreshToken = refreshToken;
     }
 
-    @Autowired
-    public JwtAuthenticationFilter(JwtService jwtService, ObjectMapper objectMapper) {
-        this.jwtService = jwtService;
-        this.objectMapper = objectMapper;
-    }
 
 
     @Override

@@ -32,7 +32,6 @@ public class AuthController {
                     .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
 
         } catch (Exception e) {
-            log.error("login", e.getMessage());
             throw new RuntimeException(e);
         }
     }
