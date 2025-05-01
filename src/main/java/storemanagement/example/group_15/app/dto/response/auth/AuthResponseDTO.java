@@ -1,12 +1,10 @@
 package storemanagement.example.group_15.app.dto.response.auth;
 
-import storemanagement.example.group_15.domain.auth.constant.Role;
-
-public class AuthLoginResponseDTO {
+public class AuthResponseDTO {
     private final String accessToken;
     private final String refreshToken;
 
-    public AuthLoginResponseDTO(String accessToken, String refreshToken) {
+    public AuthResponseDTO(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
 

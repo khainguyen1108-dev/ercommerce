@@ -2,6 +2,7 @@ package storemanagement.example.group_15.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.carts.entity.CartEntity;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,11 @@ public class AuthEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_id", nullable = false)
-    private Long roleId; // Sửa thành role_id thay vì Enum nếu theo Excel
+    @Column(name = "role_id")
+    private Long roleId;
 
     @Column(nullable = false, length = 50)
-    private String name; // Chỉnh lại đúng theo file Excel (username -> name)
+    private String name;
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -29,7 +30,7 @@ public class AuthEntity {
     private String password;
 
     @Column
-    private LocalDateTime dob; // Ngày sinh, kiểu ngày giờ
+    private LocalDateTime dob;
 
     @Column(length = 255)
     private String address;
@@ -38,7 +39,7 @@ public class AuthEntity {
     private String phone;
 
     @Column
-    private Boolean isBuy; // Trạng thái đã mua hay chưa
+    private Boolean isBuy;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -55,5 +56,9 @@ public class AuthEntity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    @OneToOne(mappedBy = "cart")
+    private CartEntity cart;
+
 }
 

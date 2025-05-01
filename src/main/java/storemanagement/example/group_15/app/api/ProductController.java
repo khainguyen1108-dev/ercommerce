@@ -23,23 +23,28 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    //    READ -> get all product
-//    @GetMapping("")
-//    public void getAll(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<ProductEntity> products = productService.getAllProducts(pageable);gi
-//    }
+
+    @GetMapping("")
+    public void getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductEntity> products = productService.getAllProducts(pageable);
+    }
 
 
-    //READ -> get product by id
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ApiResponse> getById() {
-//
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
+        try {
+            ProductEntity output = this.productService.getById(id);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
+        } catch (Exception e) {
+            log.error("getProductById", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 
-    //CREATE -> create product
     @PostMapping()
     public ResponseEntity<ApiResponse> create(@RequestBody @Valid ProductCreateDTO product) {
         try {
@@ -52,27 +57,24 @@ public class ProductController {
         }
     }
 
-    //DELETE -> delete product
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         try {
             Long output = this.productService.delete(id);
             return ResponseEntity.status(SuccessConstant.CREATED)
-                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 204));
         } catch (Exception e) {
             log.error("deleteProduct", e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    //
-    //PUT -> update product
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody ProductCreateDTO product) {
         try {
             Long output = this.productService.update(product, id);
             return ResponseEntity.status(SuccessConstant.CREATED)
-                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
         } catch (Exception e) {
             log.error("deleteProduct", e.getMessage());
             throw new RuntimeException(e);

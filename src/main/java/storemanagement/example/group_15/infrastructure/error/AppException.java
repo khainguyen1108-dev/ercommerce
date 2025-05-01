@@ -1,13 +1,16 @@
 package storemanagement.example.group_15.infrastructure.error;
 
-public class AppException extends RuntimeException{
-    private  String code;
-    public AppException(String code, String message) {
+import org.springframework.http.HttpStatus;
+
+public class AppException extends RuntimeException {
+    private HttpStatus code;
+
+    public AppException(HttpStatus code, String message) {
         super(message);
         this.code = code;
     }
 
-    public String getCode() {
+    public HttpStatus getCode() {
         return code;
     }
 
