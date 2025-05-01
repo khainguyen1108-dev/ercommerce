@@ -1,29 +1,51 @@
 package storemanagement.example.group_15.domain.users.service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO;
-import storemanagement.example.group_15.app.dto.response.auth.AuthLoginResponseDTO;
-import storemanagement.example.group_15.domain.users.constant.Role;
+import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.infrastructure.error.AppException;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class AuthService {
     @Autowired
-    private  AuthRepository authRepository;
-    public AuthLoginResponseDTO login(AuthLoginRequestDTO input) {
-        //check email existed
+    private AuthRepository authRepository;
+    @Autowired
+    private JwtService jwtService;
+
+    public AuthResponseDTO login(AuthLoginRequestDTO input, HttpServletResponse response) {
         Optional<AuthEntity> existed = this.authRepository.findByEmail(input.getEmail());
-        if (existed.isPresent()){
-            throw new AppException("EMAIL_EXISTS", "Email already exists");
+        if (existed.isEmpty()) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "email.not_found");
         }
-        AuthLoginResponseDTO output = new AuthLoginResponseDTO("123","456",Role.ADMIN);
-//        AuthEntity user_entity = new AuthEntity(input.getName(),input.getPassword(),input.getEmail(),input.getRole());
-//        this.authRepository.save(user_entity);
-        return output;
+        if (!existed.get().getPassword().trim().equals(input.getPassword().trim())) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "password.invalid");
+        }
+        Map<String, String> output = this.jwtService.generateTokens(existed.get().getId().toString());
+        AuthResponseDTO out = new AuthResponseDTO(output.get("accessToken"), output.get("refreshToken"));
+        Cookie accessTokenCookie = new Cookie("accessToken", output.get("accessToken"));
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(false);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge((int) this.jwtService.getACCESS_TOKEN_VALIDITY());
+        response.addCookie(accessTokenCookie);
+        Cookie refreshTokenCookie = new Cookie("refreshToken", output.get("refreshToken"));
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(false);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge((int) this.jwtService.getREFRESH_TOKEN_VALIDITY());
+        response.addCookie(refreshTokenCookie);
+        return out;
     }
+//    public AuthResponseDTO register(AuthRegisterRequestDTO input, HttpServletResponse response){
+//        AuthEntity
+//    }
 }

@@ -23,10 +23,10 @@ public class ProductEntity {
     private Long id;
 
     @Column(name = "inventory", nullable = false)
-    private Integer inventory;
+    private Long inventory;
 
     @Column(name = "sold", nullable = false)
-    private Integer sold;
+    private Long sold;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
@@ -34,15 +34,14 @@ public class ProductEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "price", nullable = false, precision = 15, scale = 2)
-    private BigDecimal price;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
     @Column(name = "img", length = 500)
     private String img;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_id", nullable = true)
-    private CollectionEntity collection;
+    @Column(name = "collection_id")
+    private Long collectionId;
 
     @Column(name = "vendor", length = 255)
     private String vendor;

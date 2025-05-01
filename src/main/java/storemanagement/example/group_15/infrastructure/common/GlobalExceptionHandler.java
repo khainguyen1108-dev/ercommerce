@@ -26,17 +26,15 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("message", "Lỗi xác thực dữ liệu");
         response.put("errors", errors);
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<Object> handleAppException(AppException ex){
+    public ResponseEntity<Object> handleAppException(AppException ex) {
         log.error("exception", ex);
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.BAD_REQUEST.value());
