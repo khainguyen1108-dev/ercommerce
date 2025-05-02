@@ -1,8 +1,6 @@
 package storemanagement.example.group_15.app.api;
 
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,19 +13,14 @@ import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.products.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
-
-
 @RestController()
 @RequestMapping("/products")
 public class ProductController {
-    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     @Autowired
     private ProductService productService;
 
-
     @GetMapping("")
-    public ResponseEntity<ApiResponse<Page<ProductEntity>>>  getAll(
+    public ResponseEntity<ApiResponse<Page<ProductEntity>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -40,7 +33,6 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductEntity>> getById(@PathVariable Long id) {

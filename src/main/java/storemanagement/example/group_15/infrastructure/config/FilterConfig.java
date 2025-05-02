@@ -24,6 +24,7 @@ public class FilterConfig {
         // registrationBean.addUrlPatterns("/auth/*");
         registrationBean.addUrlPatterns("/users/*");
         registrationBean.addUrlPatterns("/carts/*");
+        registrationBean.addUrlPatterns("/orders/*");
 
         registrationBean.setOrder(1);
 
