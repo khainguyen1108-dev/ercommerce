@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +38,23 @@ public class OrderController {
     } catch (Exception e) {
       log.error("checkout", e.getMessage());
       throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error when checkout: " + e.getMessage());
+    }
+  }
+
+  // TODO: only admin can update status
+  @PutMapping("/update")
+  public ResponseEntity<ApiResponse<OrderResponseDTO>> updateStatusOrder(HttpServletRequest request, Long orderId,
+      boolean status) {
+    try {
+      Long userId = AuthHelper.getUserIdFromRequest(request);
+
+      OrderResponseDTO order = orderService.updateStatusOrder(orderId, status);
+
+      return ResponseEntity.status(SuccessConstant.CREATED).body(
+          ApiResponse.success(SuccessConstant.SUCCESS, order, 201));
+    } catch (Exception e) {
+      log.error("update status", e.getMessage());
+      throw new AppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error when update status: " + e.getMessage());
     }
   }
 }
