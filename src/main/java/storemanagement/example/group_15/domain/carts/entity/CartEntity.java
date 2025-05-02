@@ -2,7 +2,9 @@ package storemanagement.example.group_15.domain.carts.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.carts.constants.PaymentMethod;
 import storemanagement.example.group_15.domain.products.entity.ProductInCartEntity;
+import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 
 import java.math.BigDecimal;
@@ -39,10 +41,9 @@ public class CartEntity {
     @Column(name = "payment_method", nullable = false, length = 20)
     private PaymentMethod paymentMethod;
 
-    public enum PaymentMethod {
-        COD,
-        CREDIT_CARD
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private AuthEntity customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

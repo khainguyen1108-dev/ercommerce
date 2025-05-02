@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/vouchers")
 public class VoucherController {
     //add
-    @PostMapping("")
-    public create
+//    @PostMapping("")
+//    public create
     //update
     //delete
     //getAll
