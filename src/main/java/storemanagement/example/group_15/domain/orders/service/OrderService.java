@@ -1,5 +1,13 @@
 package storemanagement.example.group_15.domain.orders.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,6 +20,8 @@ import storemanagement.example.group_15.app.dto.response.voucher.VoucherResponse
 import storemanagement.example.group_15.domain.carts.service.CartService;
 import storemanagement.example.group_15.domain.orders.entity.OrderEntity;
 import storemanagement.example.group_15.domain.orders.repository.OrderRepository;
+import storemanagement.example.group_15.domain.products.entity.ProductEntity;
+import storemanagement.example.group_15.domain.products.repository.ProductRepository;
 import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 import storemanagement.example.group_15.domain.vouchers.repository.VoucherRepository;
@@ -21,15 +31,15 @@ import storemanagement.example.group_15.infrastructure.error.AppException;
 public class OrderService {
   @Autowired
   private CartService cartService;
-
   @Autowired
   private OrderRepository orderRepository;
-
   @Autowired
   private AuthRepository authRepository;
-
   @Autowired
   private VoucherRepository voucherRepository;
+
+  @Autowired
+  private ProductRepository productRepository;
 
   @Autowired
   private storemanagement.example.group_15.infrastructure.helper.JsonHelper jsonHelper;
@@ -56,7 +66,9 @@ public class OrderService {
         voucher,
         order.isStatus(),
         order.getPaymentMethod(),
-        order.getProducts());
+        order.getProducts(),
+        order.getCreatedAt(),
+        order.getUpdatedAt());
   }
 
   @Transactional
@@ -82,8 +94,29 @@ public class OrderService {
         .products(jsonHelper.convertProductsToJsonArray(cart.getProducts()))
         .build();
 
+    // save order
     orderRepository.save(order);
+
+    // change product stock
+    for (var product : cart.getProducts()) {
+      ProductEntity productEntity = productRepository.findById(product.getId().longValue())
+          .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Product not found"));
+
+      if (productEntity.getInventory() <= 0) {
+        throw new AppException(HttpStatus.BAD_REQUEST, "Product " + productEntity.getName() + " is out of stock");
+      } else if (productEntity.getInventory() < product.getQuantity()) {
+        throw new AppException(HttpStatus.BAD_REQUEST, "Product " + productEntity.getName() + " is not enough stock");
+      }
+      productEntity.setInventory(productEntity.getInventory() - product.getQuantity().longValue());
+      productEntity.setSold(productEntity.getSold() + product.getQuantity().longValue());
+      productRepository.save(productEntity);
+    }
+
+    // reset cart
     cartService.resetCart(userId);
+
+    // update userInfo
+    authRepository.updateIsBuyById(userId, true);
 
     return convertOrderDTO(order);
   }
@@ -96,6 +129,58 @@ public class OrderService {
     orderRepository.save(order);
 
     return convertOrderDTO(order);
+  }
+
+  public void deleteOrder(Long orderId) {
+    orderRepository.deleteById(orderId);
+  }
+
+  public OrderResponseDTO getOrderById(Long id) {
+    OrderEntity order = orderRepository.findById(id)
+        .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Order not found"));
+
+    return convertOrderDTO(order);
+  }
+
+  public Page<OrderResponseDTO> getOrders(Long userId, Pageable pageable) {
+    Page<OrderEntity> orders = orderRepository.findAllByCustomerId(userId, pageable);
+
+    return orders.map(this::convertOrderDTO);
+  }
+
+  public Page<OrderResponseDTO> getOrders(
+      Long userId,
+      int page,
+      int size,
+      String sortDirection,
+      LocalDate startDate,
+      LocalDate endDate) {
+    Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), "createdAt");
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    Page<OrderEntity> orders;
+
+    if (startDate != null && endDate != null) {
+      orders = orderRepository.findByCustomerIdAndCreatedAtBetween(
+          userId,
+          startDate.atStartOfDay(),
+          endDate.atTime(LocalTime.MAX),
+          pageable);
+    } else if (startDate != null) {
+      orders = orderRepository.findByCustomerIdAndCreatedAtAfter(
+          userId,
+          startDate.atStartOfDay(),
+          pageable);
+    } else if (endDate != null) {
+      orders = orderRepository.findByCustomerIdAndCreatedAtBefore(
+          userId,
+          endDate.atTime(LocalTime.MAX),
+          pageable);
+    } else {
+      orders = orderRepository.findAllByCustomerId(userId, pageable);
+    }
+
+    return orders.map(this::convertOrderDTO);
   }
 
 }

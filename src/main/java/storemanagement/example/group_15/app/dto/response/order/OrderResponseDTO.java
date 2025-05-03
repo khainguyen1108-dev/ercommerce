@@ -1,6 +1,7 @@
 package storemanagement.example.group_15.app.dto.response.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,7 @@ public class OrderResponseDTO {
   private Boolean status;
   private PaymentMethod paymentMethod;
   private String products;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+
 }
