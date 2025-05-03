@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "permissions")
+@Table(name = "permissions",  uniqueConstraints = @UniqueConstraint(columnNames = "urlPattern")
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +19,6 @@ public class PermissionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long permissionId;
-
     private String urlPattern;
 
     @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

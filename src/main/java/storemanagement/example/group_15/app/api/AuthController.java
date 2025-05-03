@@ -14,11 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO;
+import storemanagement.example.group_15.app.dto.request.auth.AuthRegisterRequestDTO;
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
+import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.domain.users.service.AuthService;
 import storemanagement.example.group_15.domain.users.service.JwtService;
+import storemanagement.example.group_15.infrastructure.helper.AuthHelper;
+import storemanagement.example.group_15.infrastructure.helper.RedisHelper;
+
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class AuthController {
@@ -49,15 +56,37 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
-//    @PostMapping("/auth/register")
-//    public ResponseEntity<ApiResponse<AuthResponseDTO>> register(@RequestBody @Valid AuthRegisterRequestDTO user, HttpServletResponse response) {
-//        try {
-//            AuthRegisterRequestDTO output = this.authService.register(user, response);
-//            return ResponseEntity.status(SuccessConstant.CREATED)
-//                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
-//        } catch (Exception e) {
-//            log.error("register", e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @PostMapping("/auth/register")
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> register(@RequestBody @Valid AuthRegisterRequestDTO user, HttpServletResponse response) {
+        try {
+            AuthResponseDTO output = this.authService.register(user, response);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PostMapping("/auth/sendOtp")
+    public ResponseEntity<ApiResponse<Object>> sendOtp( HttpServletRequest request) {
+        try {
+            Long id = AuthHelper.getUserIdFromRequest(request);
+            Object output = this.authService.sendOtp(id);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PostMapping("/auth/verify")
+    public ResponseEntity<ApiResponse<Object>> verify(@RequestBody Map<String,String > otp, HttpServletRequest request) {
+        try {
+            Long id = AuthHelper.getUserIdFromRequest(request);
+            String otp_verify = otp.get("otp");
+            Object output = this.authService.verify(otp_verify,id);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

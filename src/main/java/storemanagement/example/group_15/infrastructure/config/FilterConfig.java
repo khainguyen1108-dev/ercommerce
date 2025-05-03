@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import storemanagement.example.group_15.app.middleware.AuthorizationFilter;
 import storemanagement.example.group_15.app.middleware.JwtAuthenticationFilter;
-import storemanagement.example.group_15.filters.AuthorizationFilter;
 
 @Configuration
 public class FilterConfig {
     @Autowired
     private  JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
-    private  AuthorizationFilter authorizationFilter;
+    private AuthorizationFilter authorizationFilter;
 
 
     @Bean
@@ -25,6 +25,17 @@ public class FilterConfig {
         registrationBean.addUrlPatterns("/rating/*");
         registrationBean.addUrlPatterns("/carts/*");
         registrationBean.addUrlPatterns("/orders/*");
+        registrationBean.addUrlPatterns("/permissions/*");
+        registrationBean.addUrlPatterns("/rules/*");
+        registrationBean.addUrlPatterns("/products/*");
+        registrationBean.addUrlPatterns("/events/*");
+        registrationBean.addUrlPatterns("/statistic/*");
+        registrationBean.addUrlPatterns("/collection/*");
+        registrationBean.addUrlPatterns("/vouchers/*");
+        registrationBean.addUrlPatterns("/auth/sendOtp");
+        registrationBean.addUrlPatterns("/auth/verify");
+
+
         registrationBean.setOrder(1);
         return registrationBean;
     }
@@ -32,12 +43,18 @@ public class FilterConfig {
     public FilterRegistrationBean<AuthorizationFilter> authorizationFilterRegistration() {
         FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(authorizationFilter);
-        registrationBean.addUrlPatterns("/admin/*");
         registrationBean.addUrlPatterns("/users/*");
         registrationBean.addUrlPatterns("/favorites/*");
         registrationBean.addUrlPatterns("/rating/*");
         registrationBean.addUrlPatterns("/carts/*");
         registrationBean.addUrlPatterns("/orders/*");
+        registrationBean.addUrlPatterns("/permissions/*");
+        registrationBean.addUrlPatterns("/rules/*");
+        registrationBean.addUrlPatterns("/products/*");
+        registrationBean.addUrlPatterns("/events/*");
+        registrationBean.addUrlPatterns("/statistic/*");
+        registrationBean.addUrlPatterns("/collection/*");
+        registrationBean.addUrlPatterns("/vouchers/*");
         registrationBean.setOrder(2);
         return registrationBean;
     }
