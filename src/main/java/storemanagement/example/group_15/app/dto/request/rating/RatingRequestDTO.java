@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class RatingRequestDTO {
     private Long productId;
-    private Long customerId;
     private Integer stars;
     private String description;
 }

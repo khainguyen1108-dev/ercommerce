@@ -6,7 +6,7 @@ import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 
 @Entity
-@Table(name = "rating")
+@Table(name = "rating", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "customer_id"}))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

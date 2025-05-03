@@ -1,5 +1,6 @@
 package storemanagement.example.group_15.domain.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import storemanagement.example.group_15.domain.collections.entity.CollectionEntity;

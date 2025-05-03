@@ -20,4 +20,5 @@ public class FavoritesEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private AuthEntity customer;
+
 }
