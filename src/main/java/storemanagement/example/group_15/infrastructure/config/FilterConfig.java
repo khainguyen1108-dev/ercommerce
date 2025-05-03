@@ -23,6 +23,9 @@ public class FilterConfig {
         registrationBean.setFilter(jwtAuthenticationFilter);
 //        registrationBean.addUrlPatterns("/auth/*");
         registrationBean.addUrlPatterns("/users/*");
+        registrationBean.addUrlPatterns("/favorites/*");
+        registrationBean.addUrlPatterns("/rating/*");
+
         registrationBean.setOrder(1);
 
         return registrationBean;

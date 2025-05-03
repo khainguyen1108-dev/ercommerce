@@ -1,5 +1,7 @@
 package storemanagement.example.group_15.app.api;
 
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.rating.RatingRequestDTO;
 import storemanagement.example.group_15.app.dto.request.rating.RatingRequestParamDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
+import storemanagement.example.group_15.app.dto.response.rating.RatingResponseDTO;
 import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
 import storemanagement.example.group_15.domain.rating.service.RatingService;
 
@@ -19,18 +22,20 @@ public class RatingController {
     @Autowired
     private RatingService ratingService;
     @PostMapping("")
-    public ResponseEntity<ApiResponse<RatingEntity>> create(@RequestBody @Valid RatingRequestDTO input){
+    public ResponseEntity<ApiResponse<RatingResponseDTO>> create(@RequestBody @Valid RatingRequestDTO input, HttpServletRequest request){
         try{
-            RatingEntity output = this.ratingService.create(input);
+            Claims claims = (Claims) request.getAttribute("claims");
+            String sub = (String) claims.get("sub");
+            RatingResponseDTO output = this.ratingService.create(input, Long.parseLong(sub));
             return ResponseEntity.status(SuccessConstant.CREATED).body(ApiResponse.success("success",output,SuccessConstant.CREATED));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("")
-    public ResponseEntity<ApiResponse< List<RatingEntity>>> getAll(@RequestParam @Valid RatingRequestParamDTO input){
+    @GetMapping()
+    public ResponseEntity<ApiResponse< List<RatingResponseDTO>>> getAll(@ModelAttribute @Valid RatingRequestParamDTO input){
         try{
-            List<RatingEntity> output = this.ratingService.findAll(input);
+            List<RatingResponseDTO> output = this.ratingService.findAll(input);
             return ResponseEntity.status(SuccessConstant.OK).body(ApiResponse.success("success",output,SuccessConstant.OK));
         } catch (Exception e) {
             throw new RuntimeException(e);

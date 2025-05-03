@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class RatingRequestParamDTO {
     private Long productId;
-    private Long customerId;
 }
