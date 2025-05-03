@@ -26,6 +26,9 @@ public class FilterConfig {
         registrationBean.addUrlPatterns("/favorites/*");
         registrationBean.addUrlPatterns("/rating/*");
 
+        registrationBean.addUrlPatterns("/carts/*");
+        registrationBean.addUrlPatterns("/orders/*");
+
         registrationBean.setOrder(1);
 
         return registrationBean;

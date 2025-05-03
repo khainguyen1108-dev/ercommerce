@@ -2,6 +2,7 @@ package storemanagement.example.group_15.domain.orders.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import storemanagement.example.group_15.domain.carts.constants.PaymentMethod;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,8 +10,6 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "orders")
@@ -31,8 +30,8 @@ public class OrderEntity {
     @Column(name = "total_payment", nullable = false)
     private BigDecimal totalPayment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voucher_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "voucher_id", nullable = true)
     private VoucherEntity voucher;
 
     @Enumerated(EnumType.STRING)
@@ -49,10 +48,5 @@ public class OrderEntity {
     @Type(JsonType.class)
     @Column(columnDefinition = "json", name = "products")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private List<Map<String, Object>> products;
-
-    public enum PaymentMethod {
-        COD,
-        CREDIT_CARD
-    }
+    private String products;
 }
