@@ -58,7 +58,6 @@ public class FavoritesService {
             productDTO.setDescription(product.getDescription());
             productDTO.setPrice(product.getPrice());
             productDTO.setImg(product.getImg());
-            productDTO.setCollectionId(product.getCollectionId());
             productDTO.setVendor(product.getVendor());
             productDTOs.add(productDTO);
         }
@@ -88,7 +87,6 @@ public class FavoritesService {
             productDTO.setDescription(product.getDescription());
             productDTO.setPrice(product.getPrice());
             productDTO.setImg(product.getImg());
-            productDTO.setCollectionId(product.getCollectionId());
             productDTO.setVendor(product.getVendor());
             productDTOs.add(productDTO);
         }

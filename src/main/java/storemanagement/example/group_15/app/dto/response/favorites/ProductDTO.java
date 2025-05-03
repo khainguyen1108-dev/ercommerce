@@ -11,6 +11,5 @@ public class ProductDTO {
     private String description;
     private Double price;
     private String img;
-    private Long collectionId;
     private String vendor;
 }

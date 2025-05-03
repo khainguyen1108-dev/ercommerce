@@ -59,7 +59,6 @@ public class RatingService {
         productDTO.setDescription(product.get().getDescription());
         productDTO.setPrice(product.get().getPrice());
         productDTO.setImg(product.get().getImg());
-        productDTO.setCollectionId(product.get().getCollectionId());
         productDTO.setVendor(product.get().getVendor());
 
         CustomerDTO customerDTO = new CustomerDTO();
@@ -102,7 +101,6 @@ public class RatingService {
             productDTO.setDescription(rating.getProduct().getDescription());
             productDTO.setPrice(rating.getProduct().getPrice());
             productDTO.setImg(rating.getProduct().getImg());
-            productDTO.setCollectionId(rating.getProduct().getCollectionId());
             productDTO.setVendor(rating.getProduct().getVendor());
             dto.setCustomer(customerDTO);
             dto.setProducts(productDTO);

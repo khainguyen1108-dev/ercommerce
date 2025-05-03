@@ -30,7 +30,6 @@ public class AuthorizationFilter implements Filter {
     private PermissionRepository permissionRepository;
     @Autowired
     private AuthRepository authRepository;
-    @Autowired
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

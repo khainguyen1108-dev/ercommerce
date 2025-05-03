@@ -44,4 +44,23 @@ public class JsonHelper {
         }
         return jsonArray.toString();
     }
+
+    public List<ProductInCartResponseDTO> convertJsonArrayToProducts(String jsonString) {
+        List<ProductInCartResponseDTO> products = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(jsonString);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+
+            Number id = obj.getNumber("id");
+            String name = obj.getString("name");
+            String desc = obj.getString("desc");
+            String price = obj.getString("price");
+            Integer quantity = obj.getInt("quantity");
+
+            products.add(new ProductInCartResponseDTO(id, name, desc, price, quantity));
+        }
+        return products;
+    }
+
 }
