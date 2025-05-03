@@ -6,6 +6,7 @@ import lombok.Builder.Default;
 import storemanagement.example.group_15.domain.favorites.entity.FavoritesEntity;
 import storemanagement.example.group_15.domain.orders.entity.OrderEntity;
 import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
+import storemanagement.example.group_15.domain.rules.entity.RuleEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,8 +23,9 @@ public class AuthEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_id", nullable = false)
-    private Long roleId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private RuleEntity role;
 
     @Column(nullable = false, length = 50)
     private String name;
