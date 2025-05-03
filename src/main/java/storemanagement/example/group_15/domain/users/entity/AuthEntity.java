@@ -47,6 +47,8 @@ public class AuthEntity {
 
     @Column
     private Boolean isBuy;
+    @Column(name = "is_verified",nullable = false)
+    private Boolean isVerify = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

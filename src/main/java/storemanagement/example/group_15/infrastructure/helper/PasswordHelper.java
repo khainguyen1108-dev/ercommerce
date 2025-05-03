@@ -1,7 +1,9 @@
 package storemanagement.example.group_15.infrastructure.helper;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordHelper {
     public static String hashPassword(String plainPassword) {
         if (plainPassword == null || plainPassword.isEmpty()) {

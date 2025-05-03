@@ -16,14 +16,14 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-  # redis:
-  #   host: localhost
-  #   port: 6379
+  redis:
+     host: localhost
+     port: 6379
   mail:
     host: smtp.gmail.com
     port: 587
     username: khai11080707@gmail.com
-    password: Khai11082003
+    password: uavnxzfrbklfkgaf
     properties:
       mail:
         smtp:
