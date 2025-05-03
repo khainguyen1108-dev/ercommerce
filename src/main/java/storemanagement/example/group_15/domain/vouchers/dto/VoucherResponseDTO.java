@@ -17,7 +17,7 @@ import java.util.List;
 public class VoucherResponseDTO {
     private Long id;
     private String name;
-    private Integer discountValue;
+    private Long discountValue;
     private LocalDate startDate;
     private LocalDate endDate;
     private VoucherType type;

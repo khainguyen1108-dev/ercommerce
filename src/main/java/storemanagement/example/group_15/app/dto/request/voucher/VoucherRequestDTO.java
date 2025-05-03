@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VoucherRequestDTO {
     private String name;
-    private int discountValue;
+    private Long discountValue;
     private String startDate;
     private String endDate;
     private VoucherType type;  // "product", "collection", "event", "all"

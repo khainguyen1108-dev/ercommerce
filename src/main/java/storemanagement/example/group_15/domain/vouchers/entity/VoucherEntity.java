@@ -29,7 +29,7 @@ public class VoucherEntity {
     private String name;
 
     @Column(name = "discount_value", nullable = false)
-    private Integer discountValue; // Giảm giá % (giá trị int)
+    private Long discountValue; // Giảm giá % (giá trị int)
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;

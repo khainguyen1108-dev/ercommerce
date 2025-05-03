@@ -41,9 +41,9 @@ public class ProductEntity {
     @Column(name = "img", length = 500)
     private String img;
 
-    @Column(name = "collection_id")
-    private Long collectionId;
-
+    @ManyToOne
+    @JoinColumn(name = "collection_id")
+    private CollectionEntity collection;
     @Column(name = "vendor", length = 255)
     private String vendor;
 
