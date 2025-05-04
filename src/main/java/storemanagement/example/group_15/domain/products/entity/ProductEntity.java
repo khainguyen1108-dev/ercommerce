@@ -8,6 +8,8 @@ import storemanagement.example.group_15.domain.favorites.entity.FavoritesEntity;
 import storemanagement.example.group_15.domain.rating.entity.RatingEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,4 +60,20 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RatingEntity> ratings = new ArrayList<>();
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDate createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDate.now();
+    }
 }

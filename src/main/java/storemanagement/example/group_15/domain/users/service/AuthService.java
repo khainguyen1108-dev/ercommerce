@@ -125,7 +125,43 @@ public class AuthService {
         String otp = AuthHelper.generateOTP();
 
         this.redisHelper.setWithExpiration(user.get().getEmail().trim(),otp,1, TimeUnit.MINUTES);
-        otpEmailHelper.sendOtpEmail(user.get().getEmail().trim(),user.get().getName(),otp);
+        this.otpEmailHelper.sendOtpEmail(user.get().getEmail().trim(),user.get().getName(),otp);
+        return "success";
+    }
+    public Object forgotPassword(String email){
+        Optional<AuthEntity> user = this.authRepository.findByEmail(email);
+        if (user.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "user_id.not_found");
+        }
+        PasswordHelper.hashPassword("123456789");
+        user.get().setPassword(user.get().getPassword());
+        this.authRepository.save(user.get());
+        this.otpEmailHelper.sendNewPasswordEmail(email,user.get().getName(),"123456789");
+        return "success";
+    }
+    public Object changePassword(String currentPassword, String newPassword, Long id){
+        Optional<AuthEntity> user = this.authRepository.findById(id);
+        if (user.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "user_id.not_found");
+        }
+        if (PasswordHelper.verifyPassword(currentPassword,user.get().getPassword())){
+            String newPass = PasswordHelper.hashPassword(newPassword);
+            user.get().setPassword(newPass);
+            this.authRepository.save(user.get());
+            return "success";
+        };
+        throw new AppException(HttpStatus.BAD_REQUEST, "current_password.wrong");
+    }
+    public Object role(Long role_id, Long id){
+        Optional<RuleEntity> role = this.ruleRepository.findById(role_id);
+        if (role.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "role_id.not_found");
+        }
+        Optional<AuthEntity> user = this.authRepository.findById(id);
+        if (user.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "user_id.not_found");
+        }
+        user.get().setRole(role.get());
         return "success";
     }
 }

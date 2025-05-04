@@ -89,4 +89,40 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
+    @PostMapping("/auth/forgot-password")
+    public ResponseEntity<ApiResponse<Object>> forgotPassword(@RequestBody Map<String, String> email){
+        try {
+            String input = email.get("email");
+            Object output = this.authService.forgotPassword(input);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 201));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PostMapping("/auth/change-password")
+    public ResponseEntity<ApiResponse<Object>> resetPassword(@RequestBody Map<String, String > reset, HttpServletRequest request){
+        try {
+            String current_password = reset.get("current_password");
+            String new_password = reset.get("new_password");
+            Long id = AuthHelper.getUserIdFromRequest(request);
+            Object output = this.authService.changePassword(current_password, new_password, id);
+            return ResponseEntity.status(SuccessConstant.OK)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PostMapping("/auth/role")
+    public ResponseEntity<ApiResponse<Object>> role(@RequestBody Map<String, String > role, HttpServletRequest request){
+        try {
+            Long role_id = Long.parseLong(role.get("role_id"));
+            Long id = AuthHelper.getUserIdFromRequest(request);
+            Object output = this.authService.role(role_id, id);
+            return ResponseEntity.status(SuccessConstant.OK)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
