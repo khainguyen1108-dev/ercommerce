@@ -17,8 +17,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     SELECT p FROM ProductEntity p 
     WHERE (:minPrice IS NULL OR p.price >= :minPrice)
       AND (:maxPrice IS NULL OR p.price <= :maxPrice)
-      AND (:fromDate IS NULL OR p.createdAt >= :fromDate)
-      AND (:toDate IS NULL OR p.createdAt <= :toDate)
+      AND (p.createdAt >= :fromDate)
+      AND ( p.createdAt <= :toDate)
 """)
     Page<ProductEntity> filterProducts(
             @Param("minPrice") Double minPrice,

@@ -1,6 +1,5 @@
 package storemanagement.example.group_15.domain.users.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import storemanagement.example.group_15.infrastructure.helper.RedisHelper;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -41,7 +39,7 @@ public class AuthService {
         if (existed.isEmpty()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "email.not_found");
         }
-        if (PasswordHelper.verifyPassword(input.getPassword(), existed.get().getPassword())) {
+        if (!PasswordHelper.verifyPassword(input.getPassword(), existed.get().getPassword())) {
             throw new AppException(HttpStatus.BAD_REQUEST, "password.invalid");
         }
         Map<String, String> output = this.jwtService.generateTokens(existed.get().getId().toString());

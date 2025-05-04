@@ -79,6 +79,12 @@ public class ProductService {
     }
 
     public Page<ProductDto> getAllProducts(Pageable pageable, Double minPrice, Double maxPrice, LocalDate fromDate, LocalDate toDate) {
+        if (fromDate == null) {
+            fromDate = LocalDate.of(2000, 1, 1);
+        }
+        if (toDate == null) {
+            toDate = LocalDate.now();
+        }
         Page<ProductEntity> productPage = productRepository.filterProducts(minPrice, maxPrice, fromDate, toDate, pageable);
 
         List<ProductDto> dtoList = new ArrayList<>();
