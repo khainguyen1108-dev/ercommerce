@@ -10,6 +10,7 @@ import storemanagement.example.group_15.app.dto.request.auth.AuthRegisterRequest
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.domain.rules.entity.RuleEntity;
 import storemanagement.example.group_15.domain.rules.repository.RuleRepository;
+import storemanagement.example.group_15.domain.users.dto.UserDto;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.infrastructure.error.AppException;
@@ -58,12 +59,13 @@ public class AuthService {
         response.addCookie(refreshTokenCookie);
         return out;
     }
-    public AuthEntity getUser(Long id){
+    public UserDto getUser(Long id){
         Optional<AuthEntity> output = this.authRepository.findById(id);
         if (output.isEmpty()){
             throw new AppException(HttpStatus.BAD_REQUEST, "user_id.invalid");
         }
-        return  output.get();
+        UserDto response = this.toDTO(output.get());
+        return  response;
     }
 
     public AuthResponseDTO register(AuthRegisterRequestDTO input, HttpServletResponse response) {
@@ -162,4 +164,20 @@ public class AuthService {
         user.get().setRole(role.get());
         return "success";
     }
+    public UserDto toDTO(AuthEntity entity) {
+        return UserDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .address(entity.getAddress())
+                .phone(entity.getPhone())
+                .dob(entity.getDob())
+                .isBuy(entity.getIsBuy())
+                .isVerify(entity.getIsVerify())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .roleId(entity.getRole() != null ? entity.getRole().getId() : null)
+                .build();
+    }
+
 }

@@ -107,8 +107,10 @@ public class OrderService {
       } else if (productEntity.getInventory() < product.getQuantity()) {
         throw new AppException(HttpStatus.BAD_REQUEST, "Product " + productEntity.getName() + " is not enough stock");
       }
+
+      Long soldQuantity = productEntity.getSold() == null ? 0L : productEntity.getSold();
       productEntity.setInventory(productEntity.getInventory() - product.getQuantity().longValue());
-      productEntity.setSold(productEntity.getSold() + product.getQuantity().longValue());
+      productEntity.setSold(soldQuantity + product.getQuantity().longValue());
       productRepository.save(productEntity);
     }
 

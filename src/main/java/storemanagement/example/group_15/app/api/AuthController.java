@@ -17,6 +17,7 @@ import storemanagement.example.group_15.app.dto.request.auth.AuthLoginRequestDTO
 import storemanagement.example.group_15.app.dto.request.auth.AuthRegisterRequestDTO;
 import storemanagement.example.group_15.app.dto.response.auth.AuthResponseDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
+import storemanagement.example.group_15.domain.users.dto.UserDto;
 import storemanagement.example.group_15.domain.users.entity.AuthEntity;
 import storemanagement.example.group_15.domain.users.repository.AuthRepository;
 import storemanagement.example.group_15.domain.users.service.AuthService;
@@ -47,7 +48,7 @@ public class AuthController {
         }
     }
     @GetMapping("/users/getUser")
-    public AuthEntity getUsers(HttpServletRequest request){
+    public UserDto getUsers(HttpServletRequest request){
         try{
             Claims claims = (Claims) request.getAttribute("claims");
             String sub = (String) claims.get("sub");

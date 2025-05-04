@@ -6,7 +6,6 @@ import java.time.format.DateTimeParseException;
 
 public class DateHelper {
 
-
     public static LocalDate normalizeDate(String input) {
         String[] formats = {
                 "dd/MM/yyyy",
