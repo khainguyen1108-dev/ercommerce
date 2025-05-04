@@ -1,14 +1,10 @@
 package storemanagement.example.group_15.infrastructure.helper;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class DateHelper {
-
-    // Format đầu ra chuẩn
-    private static final DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static LocalDate normalizeDate(String input) {
         String[] formats = {

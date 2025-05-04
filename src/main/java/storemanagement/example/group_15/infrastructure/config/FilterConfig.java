@@ -10,10 +10,9 @@ import storemanagement.example.group_15.app.middleware.JwtAuthenticationFilter;
 @Configuration
 public class FilterConfig {
     @Autowired
-    private  JwtAuthenticationFilter jwtAuthenticationFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private AuthorizationFilter authorizationFilter;
-
 
     @Bean
     public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilterRegistration() {
@@ -35,10 +34,10 @@ public class FilterConfig {
         registrationBean.addUrlPatterns("/auth/sendOtp");
         registrationBean.addUrlPatterns("/auth/verify");
 
-
         registrationBean.setOrder(1);
         return registrationBean;
     }
+
     @Bean
     public FilterRegistrationBean<AuthorizationFilter> authorizationFilterRegistration() {
         FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();

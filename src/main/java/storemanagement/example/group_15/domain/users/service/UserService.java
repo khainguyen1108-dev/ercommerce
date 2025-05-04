@@ -32,12 +32,18 @@ public class UserService {
     AuthEntity user = authRepository.findById(id)
         .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "User not found"));
 
-    user.setName(dto.getName());
-    user.setEmail(dto.getEmail());
-    user.setPassword(dto.getPassword());
-    user.setDob(dto.getDob());
-    user.setAddress(dto.getAddress());
-    user.setPhone(dto.getPhone());
+    if (dto.getName() != null) {
+      user.setName(dto.getName());
+    }
+    if (dto.getDob() != null) {
+      user.setDob(dto.getDob());
+    }
+    if (dto.getAddress() != null) {
+      user.setAddress(dto.getAddress());
+    }
+    if (dto.getPhone() != null) {
+      user.setPhone(dto.getPhone());
+    }
 
     authRepository.save(user);
     return convertToResponseDTO(user);
