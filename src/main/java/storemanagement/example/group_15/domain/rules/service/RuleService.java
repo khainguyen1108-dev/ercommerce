@@ -10,6 +10,7 @@ import storemanagement.example.group_15.app.dto.request.rule.RuleRequestDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
 import storemanagement.example.group_15.domain.permissions.entity.PermissionEntity;
 import storemanagement.example.group_15.domain.permissions.repository.PermissionRepository;
+import storemanagement.example.group_15.domain.rules.dto.RuleDTO;
 import storemanagement.example.group_15.domain.rules.entity.RuleEntity;
 import storemanagement.example.group_15.domain.rules.entity.RulePermissionEntity;
 import storemanagement.example.group_15.domain.rules.repository.RulePermissionRepository;
@@ -26,6 +27,15 @@ public class RuleService {
     private RuleRepository ruleRepository;
     @Autowired
     private PermissionRepository permissionRepository;
+
+    public Long delete(Long id){
+        Optional<RuleEntity> ruleEntity = this.ruleRepository.findById(id);
+        if (ruleEntity.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "role_id.not_found");
+        }
+        this.ruleRepository.delete(ruleEntity.get());
+        return id;
+    }
    public Map<String, Object> create(RuleRequestDTO input){
        Set<String> permissions = input.getPermissions();
        String name = input.getName();
@@ -55,4 +65,15 @@ public class RuleService {
        response.put("not_found",pNotFound);
        return response;
    }
+   public List<RuleDTO> getAll(){
+        List<RuleEntity> ruleEntities = this.ruleRepository.findAll();
+       return ruleEntities.stream().map(this::toDTO).toList();
+   }
+    public RuleDTO toDTO(RuleEntity rule) {
+        return RuleDTO.builder()
+                .id(rule.getId())
+                .name(rule.getName())
+                .build();
+    }
+
 }

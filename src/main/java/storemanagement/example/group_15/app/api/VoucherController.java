@@ -9,10 +9,12 @@ import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.voucher.VoucherRequestDTO;
 import storemanagement.example.group_15.app.dto.response.cart.CartResponseDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
+import storemanagement.example.group_15.domain.vouchers.dto.VoucherDTO;
 import storemanagement.example.group_15.domain.vouchers.dto.VoucherResponseDTO;
 import storemanagement.example.group_15.domain.vouchers.service.VoucherService;
 import storemanagement.example.group_15.infrastructure.helper.AuthHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -67,6 +69,15 @@ public class VoucherController {
             String data =  this.voucherService.calcPrice(voucher_id,customer_id);
             return ResponseEntity.status(SuccessConstant.OK).body(ApiResponse.success("success",data,SuccessConstant.OK));
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @GetMapping("/getAll")
+    public ResponseEntity<ApiResponse<List<VoucherDTO>>> getALl(){
+        try{
+            List<VoucherDTO> data =  this.voucherService.getAll();
+            return ResponseEntity.status(SuccessConstant.OK).body(ApiResponse.success("success",data,SuccessConstant.OK));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

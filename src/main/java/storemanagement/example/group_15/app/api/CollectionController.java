@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import storemanagement.example.group_15.app.constant.SuccessConstant;
 import storemanagement.example.group_15.app.dto.request.collections.CollectionRequestDTO;
 import storemanagement.example.group_15.app.dto.response.common.ApiResponse;
+import storemanagement.example.group_15.domain.collections.dto.CollectionDTO;
 import storemanagement.example.group_15.domain.collections.entity.CollectionEntity;
 import storemanagement.example.group_15.domain.collections.service.CollectionService;
 
@@ -20,9 +21,9 @@ public class CollectionController {
     public CollectionService collectionService;
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<CollectionEntity>> create(@RequestBody @Valid CollectionRequestDTO input){
+    public ResponseEntity<ApiResponse<Long>> create(@RequestBody @Valid CollectionRequestDTO input){
        try{
-           CollectionEntity output = this.collectionService.create(input);
+           Long output = this.collectionService.create(input);
            return ResponseEntity.status(SuccessConstant.CREATED).body(ApiResponse.success("success",output,SuccessConstant.CREATED));
        } catch (Exception e) {
            throw new RuntimeException(e);
@@ -49,9 +50,9 @@ public class CollectionController {
         }
     }
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<CollectionEntity>>> getAll(){
+    public ResponseEntity<ApiResponse<List<CollectionDTO> >> getAll(){
         try{
-            List<CollectionEntity> output = this.collectionService.getAll();
+            List<CollectionDTO>  output = this.collectionService.getAll();
             return ResponseEntity.status(SuccessConstant.OK).body(ApiResponse.success("success",output,SuccessConstant.OK));
         } catch (Exception e) {
             throw new RuntimeException(e);

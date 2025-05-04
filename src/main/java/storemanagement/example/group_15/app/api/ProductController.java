@@ -16,6 +16,8 @@ import storemanagement.example.group_15.domain.products.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @RestController()
 @RequestMapping("/products")
@@ -42,7 +44,28 @@ public class ProductController {
         }
     }
 
-
+    @GetMapping("/collection/{collection_id}")
+    public ResponseEntity<ApiResponse< List<ProductDto>>> getByCollection(@PathVariable Long collection_id) {
+        try {
+            List<ProductDto> output = this.productService.getByCollectionId(collection_id);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PostMapping("/collection")
+    public ResponseEntity<ApiResponse<String>> addProductToCollection(@RequestBody Map<String, Long> input){
+        try {
+            Long product_id = input.get("product_id");
+            Long collection_id = input.get("collection_id");
+            String output = this.productService.addProductToCollection(product_id,collection_id);
+            return ResponseEntity.status(SuccessConstant.CREATED)
+                    .body(ApiResponse.success(SuccessConstant.SUCCESS, output, 200));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductDto>> getById(@PathVariable Long id) {
         try {

@@ -11,9 +11,11 @@ import storemanagement.example.group_15.domain.carts.repository.CartRepository;
 import storemanagement.example.group_15.domain.collections.entity.CollectionEntity;
 import storemanagement.example.group_15.domain.collections.repository.CollectionRepository;
 import storemanagement.example.group_15.domain.events.entity.EventEntity;
+import storemanagement.example.group_15.domain.events.repository.EventRepository;
 import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.products.entity.ProductInCartEntity;
 import storemanagement.example.group_15.domain.vouchers.constant.VoucherType;
+import storemanagement.example.group_15.domain.vouchers.dto.VoucherDTO;
 import storemanagement.example.group_15.domain.vouchers.dto.VoucherResponseDTO;
 import storemanagement.example.group_15.domain.vouchers.entity.VoucherEntity;
 import storemanagement.example.group_15.domain.vouchers.repository.VoucherRepository;
@@ -24,6 +26,7 @@ import storemanagement.example.group_15.infrastructure.helper.JsonHelper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VoucherService {
@@ -33,6 +36,8 @@ public class VoucherService {
     private VoucherRepository voucherRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private EventRepository eventRepository;
     @Autowired
     private JsonHelper jsonHelper;
     public VoucherResponseDTO create(VoucherRequestDTO input) throws JsonProcessingException {
@@ -107,9 +112,28 @@ public class VoucherService {
         this.voucherRepository.save(output.get());
         return id;
     }
+    public VoucherDTO toDTO(VoucherEntity entity) {
+        return VoucherDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .discountValue(entity.getDiscountValue())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .type(entity.getType())
+                .condition(this.jsonHelper.getConditionsAsList(entity.getCondition()))
+                .eventId(entity.getEvent() != null ? entity.getEvent().getId() : null)
+                .build();
+    }
+
+    public List<VoucherDTO>  getAll(){
+        List<VoucherEntity> input = this.voucherRepository.findAll();
+        List<VoucherDTO> response = input.stream().map(this::toDTO).toList();
+
+        return response;
+    }
     private void applyVoucherToCart(CartEntity cart, VoucherEntity voucher, BigDecimal discount) {
         cart.setVoucher(voucher);
-        cart.setTotalPayment(cart.getTotalPayment().subtract(discount));
+        cart.setTotalPayment(cart.getTotalPrice().subtract(discount));
         this.cartRepository.save(cart);
     }
     public String calcPrice(Long id, Long customer_id) {
@@ -160,7 +184,12 @@ public class VoucherService {
             }
 
             case EVENT -> {
-                if (!voucher.getEvent().getTimeAt().toLocalDate().equals(today)) {
+                Long event_id = Long.parseLong(jsonHelper.getConditionsAsList(voucher.getCondition()).getFirst());
+                Optional<EventEntity> eventEntity = this.eventRepository.findById(event_id);
+                if (eventEntity.isEmpty()){
+                    throw new AppException(HttpStatus.BAD_REQUEST," event_id.not_found");
+                }
+                if (!eventEntity.get().getTimeAt().toLocalDate().equals(today)) {
                     return "cannot apply voucher at today";
                 }
                 discount = totalPrice.multiply(discountRate);
@@ -176,8 +205,6 @@ public class VoucherService {
 
             default -> throw new AppException(HttpStatus.BAD_REQUEST, "type.not_found");
         }
-
-
     }
 
 

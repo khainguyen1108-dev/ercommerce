@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import storemanagement.example.group_15.app.dto.request.product.ProductCreateDTO;
+import storemanagement.example.group_15.domain.collections.entity.CollectionEntity;
+import storemanagement.example.group_15.domain.collections.repository.CollectionRepository;
 import storemanagement.example.group_15.domain.products.dto.ProductDto;
 import storemanagement.example.group_15.domain.products.entity.ProductEntity;
 import storemanagement.example.group_15.domain.products.repository.ProductRepository;
@@ -21,7 +23,8 @@ import java.util.Optional;
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
-
+    @Autowired
+    private CollectionRepository collectionRepository;
     public Long create(ProductCreateDTO input) {
         Optional<ProductEntity> product = this.productRepository.findByName(input.getName());
         if (product.isPresent()){
@@ -37,7 +40,32 @@ public class ProductService {
         this.productRepository.save(dataCreate);
         return dataCreate.getId();
     }
-
+    public List<ProductDto> getByCollectionId(Long collectionId){
+        Optional<CollectionEntity> collectionEntity = this.collectionRepository.findById(collectionId);
+        if (collectionEntity.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST, "collection_id.not_found");
+        }
+        List<ProductEntity> listProducts = collectionEntity.get().getProducts();
+        List<ProductDto> listProductDTO = new ArrayList<>();
+        for (ProductEntity item : listProducts){
+            ProductDto i = ProductService.toDto(item);
+            listProductDTO.add(i);
+        }
+        return listProductDTO;
+    }
+    public String addProductToCollection(Long productId, Long collectionId){
+        Optional<ProductEntity> product = this.productRepository.findById(productId);
+        if (product.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST,"Product with id " + productId + " not found.");
+        }
+        Optional<CollectionEntity> collectionEntity = this.collectionRepository.findById(collectionId);
+        if (collectionEntity.isEmpty()){
+            throw new AppException(HttpStatus.BAD_REQUEST,"Product with id " + collectionId + " not found.");
+        }
+        product.get().setCollection(collectionEntity.get());
+        this.productRepository.save(product.get());
+        return "success";
+    }
     public Long update(ProductCreateDTO input, Number id) {
         Optional<ProductEntity> product = this.productRepository.findById(id.longValue());
         if (product.isEmpty()){
