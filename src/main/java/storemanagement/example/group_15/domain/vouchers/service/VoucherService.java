@@ -107,86 +107,78 @@ public class VoucherService {
         this.voucherRepository.save(output.get());
         return id;
     }
-    public String calcPrice(Long id, Long customer_id){
-        Optional<CartEntity> cart = this.cartRepository.findByCustomerId(customer_id);
-        if (cart.isEmpty()){
-           throw  new AppException(HttpStatus.NOT_FOUND, "Cart not found for user: " + customer_id);
-        }
-        Optional<VoucherEntity> vouchers = this.voucherRepository.findById(id);
-        if (vouchers.isEmpty()){
-            throw  new AppException(HttpStatus.NOT_FOUND, "voucher not found: " + id);
-        }
-        LocalDate startDate = vouchers.get().getStartDate();
-        LocalDate endDate = vouchers.get().getEndDate();
-        LocalDate today = LocalDate.now();
-
-        boolean isTodayBetween = !today.isBefore(startDate) && !today.isAfter(endDate);
-        if (!isTodayBetween){
-            throw new AppException(HttpStatus.NOT_FOUND, "voucher overdue: " + id);
-
-        }
-        long discount;
-
-        List<ProductInCartEntity> listProduct = cart.get().getProductInCartEntities();
-        if (vouchers.get().getType() == VoucherType.COLLECTION){
-            List<ProductEntity> products = new ArrayList<>();
-            List<String> condition = this.jsonHelper.getConditionsAsList(vouchers.get().getCondition());
-            for (String collection_id : condition){
-                Optional<CollectionEntity> collectionEntity = this.collectionRepository.findById(Long.parseLong(collection_id));
-                if (collectionEntity.isEmpty()){
-                    throw  new AppException(HttpStatus.NOT_FOUND, "collection not found: " + collection_id);
-                }
-                List<ProductEntity> productEntities = collectionEntity.get().getProducts();
-                products.addAll(productEntities);
-            }
-            for (ProductInCartEntity productInCartEntity : listProduct){
-                ProductEntity product = productInCartEntity.getProduct();
-                if (products.contains(product)){
-                    discount = Long.parseLong(cart.get().getTotalPrice().toString())*(vouchers.get().getDiscountValue() / 100);
-                    cart.get().setVoucher(vouchers.get());
-                    cart.get().setTotalPayment(cart.get().getTotalPayment().subtract(BigDecimal.valueOf(discount)));
-                    this.cartRepository.save(cart.get());
-                    return "success";
-                }
-            }
-            return "cart cannot apply voucher";
-        }
-        if (vouchers.get().getType() == VoucherType.PRODUCT){
-            List<String> condition = this.jsonHelper.getConditionsAsList(vouchers.get().getCondition());
-            for (ProductInCartEntity productInCartEntity : listProduct){
-                ProductEntity product = productInCartEntity.getProduct();
-                if (condition.contains(product.getId().toString())){
-                    discount = Long.parseLong(cart.get().getTotalPrice().toString())*(vouchers.get().getDiscountValue() / 100);
-
-                    cart.get().setVoucher(vouchers.get());
-                    cart.get().setTotalPayment(cart.get().getTotalPayment().subtract(BigDecimal.valueOf(discount)));
-                    this.cartRepository.save(cart.get());
-                    return "success";
-                }
-            }
-            return "cart cannot apply voucher";
-        }
-        if (vouchers.get().getType() == VoucherType.EVENT){
-            EventEntity event = vouchers.get().getEvent();
-            if (!event.getTimeAt().toLocalDate().equals(LocalDate.now())){
-                return "cannot apply voucher at today";
-            }
-            discount = Long.parseLong(cart.get().getTotalPrice().toString())*(vouchers.get().getDiscountValue() / 100);
-            cart.get().setVoucher(vouchers.get());
-            cart.get().setTotalPayment(cart.get().getTotalPayment().subtract(BigDecimal.valueOf(discount)));
-            this.cartRepository.save(cart.get());
-            return "success";
-        }
-        if (vouchers.get().getType() == VoucherType.ALL){
-            discount = Long.parseLong(cart.get().getTotalPrice().toString())*(vouchers.get().getDiscountValue() / 100);
-            cart.get().setVoucher(vouchers.get());
-            cart.get().setTotalPayment(cart.get().getTotalPayment().subtract(BigDecimal.valueOf(discount)));
-            this.cartRepository.save(cart.get());
-            return "success";
-        }
-        throw  new AppException(HttpStatus.BAD_REQUEST, "type.not_found");
+    private void applyVoucherToCart(CartEntity cart, VoucherEntity voucher, BigDecimal discount) {
+        cart.setVoucher(voucher);
+        cart.setTotalPayment(cart.getTotalPayment().subtract(discount));
+        this.cartRepository.save(cart);
     }
+    public String calcPrice(Long id, Long customer_id) {
+        CartEntity cart = this.cartRepository.findByCustomerId(customer_id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Cart not found for user: " + customer_id));
 
+        VoucherEntity voucher = this.voucherRepository.findById(id)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "voucher not found: " + id));
+
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(voucher.getStartDate()) || today.isAfter(voucher.getEndDate())) {
+            throw new AppException(HttpStatus.NOT_FOUND, "voucher overdue: " + id);
+        }
+
+        List<ProductInCartEntity> listProduct = cart.getProductInCartEntities();
+        BigDecimal totalPrice = cart.getTotalPrice();
+        BigDecimal discountRate = BigDecimal.valueOf(voucher.getDiscountValue()).divide(BigDecimal.valueOf(100));
+        BigDecimal discount;
+
+        switch (voucher.getType()) {
+            case COLLECTION -> {
+                List<ProductEntity> matchedProducts = new ArrayList<>();
+                for (String collection_id : jsonHelper.getConditionsAsList(voucher.getCondition())) {
+                    CollectionEntity collection = collectionRepository.findById(Long.parseLong(collection_id))
+                            .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "collection not found: " + collection_id));
+                    matchedProducts.addAll(collection.getProducts());
+                }
+                for (ProductInCartEntity item : listProduct) {
+                    if (matchedProducts.contains(item.getProduct())) {
+                        discount = totalPrice.multiply(discountRate);
+                        applyVoucherToCart(cart, voucher, discount);
+                        return "success";
+                    }
+                }
+                return "cart cannot apply voucher";
+            }
+
+            case PRODUCT -> {
+                List<String> condition = jsonHelper.getConditionsAsList(voucher.getCondition());
+                for (ProductInCartEntity item : listProduct) {
+                    if (condition.contains(item.getProduct().getId().toString())) {
+                        discount = totalPrice.multiply(discountRate);
+                        applyVoucherToCart(cart, voucher, discount);
+                        return "success";
+                    }
+                }
+                return "cart cannot apply voucher";
+            }
+
+            case EVENT -> {
+                if (!voucher.getEvent().getTimeAt().toLocalDate().equals(today)) {
+                    return "cannot apply voucher at today";
+                }
+                discount = totalPrice.multiply(discountRate);
+                applyVoucherToCart(cart, voucher, discount);
+                return "success";
+            }
+
+            case ALL -> {
+                discount = totalPrice.multiply(discountRate);
+                applyVoucherToCart(cart, voucher, discount);
+                return "success";
+            }
+
+            default -> throw new AppException(HttpStatus.BAD_REQUEST, "type.not_found");
+        }
+
+
+    }
 
 
 

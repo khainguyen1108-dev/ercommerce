@@ -33,6 +33,7 @@ public class FilterConfig {
         registrationBean.addUrlPatterns("/vouchers/*");
         registrationBean.addUrlPatterns("/auth/sendOtp");
         registrationBean.addUrlPatterns("/auth/verify");
+        registrationBean.addUrlPatterns("/auth/change-password");
 
         registrationBean.setOrder(1);
         return registrationBean;

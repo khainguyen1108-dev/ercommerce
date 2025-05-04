@@ -10,6 +10,42 @@ import storemanagement.example.group_15.infrastructure.error.AppException;
 public class OtpEmailHelper {
     @Autowired
     private MailHelper mailHelper;
+    public void sendNewPasswordEmail(String recipientEmail, String username, String newPassword) {
+        try {
+            String htmlContent = String.format("""
+            <html>
+                <body style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="text-align: center;">
+                        <h2 style="color: #2e6c80;">Mật khẩu mới của bạn</h2>
+                    </div>
+                    <p>Xin chào <strong>%s</strong>,</p>
+                    <p>Bạn hoặc ai đó đã yêu cầu cấp lại mật khẩu cho tài khoản của bạn. Mật khẩu mới được tạo như sau:</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <span style="font-size: 24px; font-weight: bold; color: #ffffff; background-color: #f44336; padding: 10px 20px; border-radius: 5px; display: inline-block;">
+                            %s
+                        </span>
+                    </div>
+                    <p>Vui lòng sử dụng mật khẩu này để đăng nhập và đổi lại mật khẩu mới sau khi đăng nhập thành công.</p>
+                    <p>Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng liên hệ với chúng tôi qua <a href="mailto:support@example.com">support@example.com</a>.</p>
+                    <p>Trân trọng,<br>Đội ngũ hỗ trợ</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #777; text-align: center;">
+                        Đây là email tự động, vui lòng không trả lời trực tiếp.
+                    </p>
+                </body>
+            </html>
+            """, username, newPassword);
+
+            mailHelper.sendMail(
+                    recipientEmail,
+                    "Mật khẩu mới cho tài khoản của bạn",
+                    htmlContent,
+                    true
+            );
+        } catch (MessagingException e) {
+            throw new AppException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
 
     public void sendOtpEmail(String recipientEmail, String username, String otpCode)  {
     try{
